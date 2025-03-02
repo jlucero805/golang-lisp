@@ -15,7 +15,7 @@ func (e *Env) Get(ident Ident) Value {
 		return val
 	}
 	if e.Outer != nil {
-		return e.Get(ident)
+		return e.Outer.Get(ident)
 	}
 	panic("Get failed")
 }

@@ -26,6 +26,22 @@ func Test_EvaluateProgram(t *testing.T) {
 			value.Ident{Literal: "result"},
 			value.Number{Literal: 6},
 		},
+		{
+			`
+			(set abc 123)
+			(set lol-bruh 321)
+			(set add (lambda (x y)
+			          (+ x
+			             y)))
+			(set result ((lambda (x)
+			              (add (add lol-bruh
+			                        abc)
+			                   x))
+			             abc))
+			`,
+			value.Ident{Literal: "result"},
+			value.Number{Literal: 567},
+		},
 	}
 
 	for _, tt := range tests {
@@ -34,7 +50,7 @@ func Test_EvaluateProgram(t *testing.T) {
 			program := parser.ParseProgram(tokens)
 			e := evaluator.EvaluateProgram(program)
 			if e.Get(tt.resultIdent) != tt.result {
-				t.Error("fail")
+				t.Errorf("Expected %+v but got %+v", tt.result, e.Get(tt.resultIdent))
 			}
 		})
 	}
